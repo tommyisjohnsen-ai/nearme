@@ -1,0 +1,72 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: nearme-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nearme
+      POSTGRES_USER: nearme
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-nearme_secret}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    # Production: remove port exposure so DB is not reachable from host
+    # ports:
+    #   - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nearme"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      # Cache busting: only rebuild when source changes
+      args:
+        BUILDKIT_INLINE_CACHE: "1"
+    container_name: nearme-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_URL: postgres://nearme:${DB_PASSWORD:-nearme_secret}@db:5432/nearme
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set}
+      VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+      VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
+      VAPID_EMAIL: ${VAPID_EMAIL:-mailto:admin@nearme.app}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+    ports:
+      - "4000:4000"
+    depends_on:
+      db:
+        condition: service_healthy
+    # No source-code volume mount in production — image is self-contained
+    read_only: false
+    security_opt:
+      - no-new-privileges:true
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        BUILDKIT_INLINE_CACHE: "1"
+        REACT_APP_BACKEND_URL: ${REACT_APP_BACKEND_URL:-http://localhost:4000}
+        REACT_APP_VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
+    container_name: nearme-frontend
+    restart: unless-stopped
+    # nginx serves on port 80; map to 3000 for local convenience
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  pgdata:

@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌟 Lekseplan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #4F46E5; --primary-dark: #3730a3;
+      --bg: #EEF2FF; --text: #1E1B4B;
+      --norsk: #FF6B9D; --norsk-d: #c94475;
+      --matte: #4B9FE1; --matte-d: #2970b0;
+      --engelsk: #FFA94D; --engelsk-d: #d97706;
+      --naturfag: #5CC85A; --naturfag-d: #3a9e38;
+      --samfunnsfag: #20C997; --samfunnsfag-d: #0a9a72;
+      --musikk: #C44BC4; --musikk-d: #9a2a9a;
+      --kunst: #FF6B6B; --kunst-d: #c94444;
+      --gym: #FFD43B; --gym-d: #d4a80a;
+    }
+
+    body {
+      font-family: 'Baloo 2', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      color: var(--text);
+    }
+
+    /* ── Header ── */
+    .header {
+      background: linear-gradient(270deg,#FF6B9D,#FFA94D,#FFD43B,#5CC85A,#4B9FE1,#C44BC4,#FF6B9D);
+      background-size: 400% 400%;
+      animation: rainbow 8s ease infinite;
+      padding: 22px 20px 18px;
+      text-align: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,.18);
+    }
+    @keyframes rainbow { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+    .header h1 { font-size: clamp(1.9em,5vw,3em); color:#fff; text-shadow:3px 3px 0 rgba(0,0,0,.2); font-weight:800; }
+    .header p  { color:rgba(255,255,255,.93); font-size:1.05em; margin-top:4px; font-weight:500; }
+
+    /* ── Nav ── */
+    .nav {
+      display:flex; justify-content:center; flex-wrap:wrap; gap:10px;
+      padding:16px 15px; background:#fff;
+      border-bottom:3px solid #e0e4f0;
+      position:sticky; top:0; z-index:100;
+      box-shadow:0 3px 12px rgba(0,0,0,.1);
+    }
+    .nav-btn {
+      background:#f0f4ff; border:3px solid #c7d2fe; border-radius:50px;
+      padding:11px 22px; font-size:.97em; cursor:pointer; font-weight:700;
+      color:#4F46E5; font-family:'Baloo 2',sans-serif;
+      box-shadow:3px 3px 0 #c7d2fe; transition:all .15s ease;
+      min-height:44px;
+    }
+    .nav-btn:hover { transform:translate(-2px,-2px); box-shadow:5px 5px 0 #a5b4fc; }
+    .nav-btn:active { transform:translate(2px,2px); box-shadow:none; }
+    .nav-btn.active {
+      background:var(--primary); color:#fff; border-color:var(--primary-dark);
+      box-shadow:4px 4px 0 var(--primary-dark);
+    }
+
+    /* ── Main ── */
+    .main { max-width:1200px; margin:24px auto; padding:0 15px 70px; }
+
+    /* ── Claymorphism Card ── */
+    .card {
+      background:#fff; border-radius:20px; padding:24px;
+      margin-bottom:18px; border:3px solid #e0e4f0;
+      box-shadow:6px 6px 0 #d0d4e8; transition:box-shadow .2s,transform .2s;
+    }
+    .card:hover { box-shadow:8px 8px 0 #c0c4d8; transform:translate(-2px,-2px); }
+    .card-title {
+      font-size:1.35em; font-weight:800; color:var(--text);
+      margin-bottom:16px; display:flex; align-items:center; gap:8px;
+    }
+
+    /* ── Forms ── */
+    .form-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:12px; }
+    .form-group { display:flex; flex-direction:column; gap:5px; }
+    .form-group label { font-weight:700; font-size:.88em; color:#555; }
+    .form-group input, .form-group select, .form-group textarea {
+      padding:12px 15px; border:3px solid #e0e4f0; border-radius:14px;
+      font-size:1em; font-family:'Baloo 2',sans-serif;
+      background:#fafbff; transition:border-color .2s,box-shadow .2s;
+      color:var(--text); min-height:44px;
+    }
+    .form-group input:focus, .form-group select:focus {
+      outline:none; border-color:var(--primary); box-shadow:3px 3px 0 #c7d2fe;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      padding:12px 24px; border:3px solid; border-radius:50px;
+      font-size:1em; cursor:pointer; font-weight:700;
+      font-family:'Baloo 2',sans-serif; transition:all .15s ease;
+      display:inline-flex; align-items:center; gap:6px;
+      min-height:44px; white-space:nowrap;
+    }
+    .btn:active { transform:translate(3px,3px) !important; box-shadow:none !important; }
+    .btn-primary { background:var(--primary); color:#fff; border-color:var(--primary-dark); box-shadow:4px 4px 0 var(--primary-dark); }
+    .btn-primary:hover { box-shadow:6px 6px 0 var(--primary-dark); transform:translate(-2px,-2px); }
+    .btn-green { background:#22c55e; color:#fff; border-color:#15803d; box-shadow:4px 4px 0 #15803d; }
+    .btn-green:hover { box-shadow:6px 6px 0 #15803d; transform:translate(-2px,-2px); }
+    .btn-red { background:#ef4444; color:#fff; border-color:#b91c1c; box-shadow:3px 3px 0 #b91c1c; }
+    .btn-red:hover { box-shadow:5px 5px 0 #b91c1c; transform:translate(-2px,-2px); }
+    .btn-sm { padding:7px 16px; font-size:.87em; min-height:36px; }
+
+    /* ── Student chips ── */
+    .student-chips { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; }
+    .student-chip {
+      padding:9px 20px; border:3px solid #e0e4f0; border-radius:50px;
+      cursor:pointer; font-size:.95em; font-weight:700; transition:all .15s;
+      background:#fafbff; color:#555; font-family:'Baloo 2',sans-serif;
+      box-shadow:3px 3px 0 #d8ddf0; min-height:44px;
+      display:flex; align-items:center;
+    }
+    .student-chip:hover { box-shadow:4px 4px 0 #b0b8d8; transform:translate(-1px,-1px); }
+    .student-chip.active { background:var(--primary); color:#fff; border-color:var(--primary-dark); box-shadow:3px 3px 0 var(--primary-dark); }
+
+    .add-student-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .add-student-row input {
+      flex:1; min-width:160px; padding:10px 16px;
+      border:3px solid #e0e4f0; border-radius:50px;
+      font-size:1em; font-family:'Baloo 2',sans-serif;
+      color:var(--text); background:#fafbff; min-height:44px;
+    }
+    .add-student-row input:focus { outline:none; border-color:var(--primary); }
+
+    /* ── Homework list ── */
+    .hw-list { display:flex; flex-direction:column; gap:10px; }
+    .hw-item {
+      display:flex; align-items:center; gap:12px;
+      padding:14px 16px; border-radius:16px;
+      border:3px solid; background:#fff;
+      transition:all .2s; cursor:default;
+    }
+    .hw-item:hover { transform:translateX(4px); }
+    .hw-item.done { background:#f0fdf4; }
+    .hw-item.done .hw-desc, .hw-item.done .hw-subject-text { text-decoration:line-through; color:#9ca3af; }
+
+    .hw-checkbox {
+      width:34px; height:34px; border-radius:50%; border:3px solid #ddd;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; flex-shrink:0; transition:all .2s;
+      font-size:1.1em; background:#fff; min-width:34px;
+    }
+    .hw-checkbox.checked { background:#22c55e; border-color:#15803d; }
+    .hw-checkbox:hover { transform:scale(1.15); }
+
+    .subject-pill {
+      padding:4px 12px; border-radius:20px; font-size:.8em;
+      font-weight:700; color:#fff; white-space:nowrap; flex-shrink:0;
+    }
+    .gym-pill { color:#333 !important; }
+
+    .hw-info { flex:1; min-width:0; }
+    .hw-subject-text { font-weight:700; font-size:.95em; }
+    .hw-desc { color:#555; font-size:.88em; margin-top:2px; }
+    .hw-date { font-size:.8em; color:#888; margin-top:3px; font-weight:600; }
+    .hw-date.overdue { color:#ef4444; }
+    .hw-date.today { color:#f97316; }
+    .hw-date.soon { color:#22c55e; }
+
+    .del-btn {
+      background:none; border:none; cursor:pointer; color:#ddd;
+      font-size:1.3em; padding:4px; flex-shrink:0; transition:color .2s;
+      font-family:inherit; min-width:32px; min-height:32px;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .del-btn:hover { color:#ef4444; }
+
+    /* ── Progress bar ── */
+    .prog-wrap { background:#e5e7eb; border-radius:10px; height:14px; overflow:hidden; border:2px solid #d1d5db; margin-top:6px; }
+    .prog-fill { height:100%; border-radius:8px; background:linear-gradient(90deg,#22c55e,#86efac); transition:width .5s ease; }
+
+    /* ── Parent stats ── */
+    .parent-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px; }
+    .stat-box {
+      background:#fff; border:3px solid #e0e4f0; border-radius:16px;
+      padding:14px; text-align:center; box-shadow:3px 3px 0 #d0d4e8;
+    }
+    .stat-num { font-size:2em; font-weight:800; line-height:1; }
+    .stat-lbl { font-size:.8em; color:#888; font-weight:600; margin-top:4px; }
+
+    /* ── Week calendar ── */
+    .week-header {
+      background:var(--primary); color:#fff; border-radius:16px;
+      padding:12px 20px; margin-bottom:16px; font-weight:700; font-size:1.05em;
+      display:flex; align-items:center; justify-content:space-between;
+      border:3px solid var(--primary-dark); box-shadow:4px 4px 0 var(--primary-dark);
+      flex-wrap:wrap; gap:6px;
+    }
+    .week-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
+    @media(max-width:900px){ .week-grid{ grid-template-columns:repeat(3,1fr); } }
+    @media(max-width:600px){ .week-grid{ grid-template-columns:1fr; } }
+
+    .day-col { border-radius:18px; overflow:hidden; border:3px solid; box-shadow:4px 4px 0; }
+    .day-col-head { padding:10px; text-align:center; font-weight:800; font-size:.93em; color:#fff; }
+    .day-col-head.gym-head { color:#333; }
+    .day-col-body { background:#fff; padding:10px; min-height:120px; }
+    .day-task {
+      background:#f5f7ff; border-radius:10px; padding:8px 10px;
+      margin-bottom:8px; border-left:4px solid; font-size:.84em;
+    }
+    .day-task-who { font-size:.77em; color:#888; font-weight:600; }
+    .day-task-sub { font-weight:700; }
+    .day-task-desc { color:#555; font-size:.9em; margin-top:1px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+    .day-task.done-task { opacity:.55; }
+    .day-empty { color:#bbb; font-size:.88em; text-align:center; padding:20px 0; }
+
+    /* ── Stars leaderboard ── */
+    .stars-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(175px,1fr)); gap:15px; }
+    .star-card {
+      border:3px solid #fbbf24; border-radius:20px; padding:20px;
+      text-align:center; box-shadow:5px 5px 0 #d97706; transition:all .2s;
+      background:linear-gradient(135deg,#fffbeb,#fef3c7);
+    }
+    .star-card:hover { transform:translate(-3px,-3px); box-shadow:8px 8px 0 #d97706; }
+    .star-card.gold { background:linear-gradient(135deg,#fef3c7,#fde68a); border-color:#f59e0b; box-shadow:5px 5px 0 #b45309; }
+    .star-card.silver { background:linear-gradient(135deg,#f0f9ff,#e0f2fe); border-color:#38bdf8; box-shadow:5px 5px 0 #0284c7; }
+    .star-card.bronze { background:linear-gradient(135deg,#fdf4ff,#fae8ff); border-color:#c084fc; box-shadow:5px 5px 0 #9333ea; }
+    .star-rank-num { font-size:1.5em; font-weight:800; margin-bottom:4px; }
+    .star-name { font-weight:700; font-size:1.05em; color:var(--text); margin-bottom:8px; }
+    .star-big { font-size:2.6em; font-weight:800; color:#d97706; line-height:1; margin:6px 0; }
+    .star-icons { font-size:1.3em; margin:4px 0; word-break:break-all; min-height:1.6em; }
+    .rank-badge {
+      display:inline-block; padding:4px 14px; border-radius:20px;
+      font-size:.82em; font-weight:700; color:#fff; margin-top:8px;
+    }
+
+    /* ── Class overview ── */
+    .class-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:15px; }
+    .class-card { border-radius:18px; border:3px solid #e0e4f0; background:#fff; overflow:hidden; box-shadow:4px 4px 0 #d0d4e8; transition:all .2s; }
+    .class-card:hover { transform:translate(-2px,-2px); box-shadow:6px 6px 0 #c0c4d8; }
+    .class-card-head { padding:12px 16px; font-weight:800; font-size:1.05em; color:#fff; display:flex; justify-content:space-between; align-items:center; }
+    .class-card-body { padding:12px 16px; }
+    .class-hw-mini { font-size:.84em; padding:5px 0; border-bottom:1px solid #f0f0f0; display:flex; align-items:center; gap:8px; }
+    .class-hw-mini:last-child { border-bottom:none; }
+    .check-mini { font-size:1em; }
+
+    /* ── Toast ── */
+    .toast {
+      position:fixed; bottom:25px; right:25px; z-index:9999;
+      padding:15px 22px; border-radius:18px; border:3px solid;
+      font-weight:700; font-size:1em; font-family:'Baloo 2',sans-serif;
+      display:none; max-width:300px;
+      box-shadow:6px 6px 0;
+      animation:toastIn .3s ease;
+    }
+    .toast.show { display:block; }
+    .toast.star-toast { background:#fffbeb; color:#92400e; border-color:#fbbf24; box-shadow:6px 6px 0 #d97706; }
+    .toast.info-toast { background:#eff6ff; color:#1e40af; border-color:#60a5fa; box-shadow:6px 6px 0 #2563eb; }
+    @keyframes toastIn { from{transform:translateX(110%) scale(.8);opacity:0} to{transform:translateX(0) scale(1);opacity:1} }
+
+    /* ── Confetti ── */
+    #confetti-canvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9998; }
+
+    /* ── Star pop ── */
+    @keyframes starPop { 0%{transform:scale(1)} 40%{transform:scale(1.8) rotate(18deg)} 70%{transform:scale(.9) rotate(-8deg)} 100%{transform:scale(1) rotate(0)} }
+    .star-pop { animation:starPop .5s ease; }
+
+    /* ── Tab panes ── */
+    .tab-pane { display:none; }
+    .tab-pane.active { display:block; }
+
+    /* ── Divider ── */
+    .divider { height:2px; background:#e5e7eb; border-radius:2px; margin:18px 0; }
+
+    /* ── Section label ── */
+    .sec-label { font-size:1.15em; font-weight:800; color:var(--text); margin-bottom:12px; display:flex; align-items:center; gap:7px; }
+
+    /* ── Empty state ── */
+    .empty-state { text-align:center; padding:38px 20px; color:#9ca3af; }
+    .empty-emoji { font-size:3em; margin-bottom:8px; }
+    .empty-txt { font-size:1em; font-weight:600; }
+
+    /* ── Responsive ── */
+    @media(max-width:600px){
+      .card{ padding:15px; }
+      .parent-stats{ grid-template-columns:repeat(3,1fr); }
+      .nav-btn{ padding:9px 14px; font-size:.87em; }
+      .header p{ display:none; }
+    }
+    @media(prefers-reduced-motion:reduce){
+      *,*::before,*::after{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <h1>🌟 Lekseplan</h1>
+  <p>Steinerskolen i Oslo – 5. trinn 📚</p>
+</header>
+
+<nav class="nav" role="navigation" aria-label="Navigasjon">
+  <button class="nav-btn active" onclick="showTab('elev')"      data-tab="elev">📝 Mine lekser</button>
+  <button class="nav-btn"        onclick="showTab('foreldre')"  data-tab="foreldre">👨‍👩‍👧 Foreldre</button>
+  <button class="nav-btn"        onclick="showTab('klasse')"    data-tab="klasse">🏫 Klassen</button>
+  <button class="nav-btn"        onclick="showTab('uke')"       data-tab="uke">📅 Ukeplan</button>
+  <button class="nav-btn"        onclick="showTab('stjerner')"  data-tab="stjerner">⭐ Stjerner</button>
+</nav>
+
+<main class="main">
+
+  <!-- ── TAB 1: MINE LEKSER ── -->
+  <div class="tab-pane active" id="tab-elev">
+
+    <div class="card">
+      <div class="card-title">👤 Hvem er du?</div>
+      <div class="student-chips" id="student-chips" role="list"></div>
+      <div class="add-student-row">
+        <input type="text" id="new-student-name" placeholder="Skriv ditt navn her..." aria-label="Ditt navn" maxlength="30"
+               onkeydown="if(event.key==='Enter') addStudent()">
+        <button class="btn btn-green btn-sm" onclick="addStudent()" aria-label="Legg til elev">➕ Legg til meg</button>
+      </div>
+    </div>
+
+    <div class="card" id="add-hw-card" style="display:none">
+      <div class="card-title">✏️ Legg til ny lekse</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="hw-subject">Fag</label>
+          <select id="hw-subject" aria-label="Velg fag">
+            <option>Norsk</option>
+            <option>Matte</option>
+            <option>Engelsk</option>
+            <option>Naturfag</option>
+            <option>Samfunnsfag</option>
+            <option>Musikk</option>
+            <option>Kunst og håndverk</option>
+            <option>Gym</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="hw-date">Innleveringsdato</label>
+          <input type="date" id="hw-date" aria-label="Innleveringsdato">
+        </div>
+      </div>
+      <div class="form-group" style="margin-bottom:16px">
+        <label for="hw-desc">Hva skal du gjøre?</label>
+        <input type="text" id="hw-desc" placeholder="F.eks. Les side 45–50..." maxlength="120" aria-label="Beskrivelse"
+               onkeydown="if(event.key==='Enter') addHomework()">
+      </div>
+      <button class="btn btn-primary" onclick="addHomework()">➕ Legg til lekse</button>
+    </div>
+
+    <div class="card" id="hw-list-card" style="display:none">
+      <div class="card-title">📚 Mine lekser</div>
+      <div class="hw-list" id="hw-list" role="list"></div>
+    </div>
+
+  </div><!-- /tab-elev -->
+
+  <!-- ── TAB 2: FORELDREVISNING ── -->
+  <div class="tab-pane" id="tab-foreldre">
+    <div class="card">
+      <div class="card-title">👨‍👩‍👧 Foreldrevisning</div>
+      <div class="form-group" style="max-width:320px">
+        <label for="parent-select">Velg ditt barn</label>
+        <select id="parent-select" onchange="renderForeldre()" aria-label="Velg barn"></select>
+      </div>
+    </div>
+    <div id="parent-content"></div>
+  </div>
+
+  <!-- ── TAB 3: KLASSEOVERSIKT ── -->
+  <div class="tab-pane" id="tab-klasse">
+    <div class="card">
+      <div class="card-title">🏫 Klasseoversikt – denne uken</div>
+      <div class="class-grid" id="class-grid"></div>
+    </div>
+  </div>
+
+  <!-- ── TAB 4: UKEPLAN ── -->
+  <div class="tab-pane" id="tab-uke">
+    <div class="card" style="padding-bottom:28px">
+      <div class="week-header" id="week-header">
+        <span>📅 Ukesplan</span>
+        <span id="week-range" style="font-weight:500;font-size:.9em;opacity:.9"></span>
+      </div>
+      <div class="week-grid" id="week-grid"></div>
+    </div>
+  </div>
+
+  <!-- ── TAB 5: STJERNER ── -->
+  <div class="tab-pane" id="tab-stjerner">
+    <div class="card">
+      <div class="card-title">⭐ Stjerneliste – hvem er flinkest?</div>
+      <p style="color:#666;font-size:.95em;margin-bottom:18px">Du får én stjerne for hver lekse du leverer! 🎉</p>
+      <div class="stars-grid" id="stars-grid"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🏆 Rangsystem</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
+        <div class="card" style="margin:0;background:#fffbeb;border-color:#fbbf24;box-shadow:3px 3px 0 #d97706">
+          <div style="font-size:1.5em">🌱</div>
+          <div style="font-weight:700">Leksebegynner</div>
+          <div style="color:#888;font-size:.88em">0–4 stjerner</div>
+        </div>
+        <div class="card" style="margin:0;background:#eff6ff;border-color:#60a5fa;box-shadow:3px 3px 0 #2563eb">
+          <div style="font-size:1.5em">📖</div>
+          <div style="font-weight:700">Leksemester</div>
+          <div style="color:#888;font-size:.88em">5–9 stjerner</div>
+        </div>
+        <div class="card" style="margin:0;background:#faf5ff;border-color:#c084fc;box-shadow:3px 3px 0 #9333ea">
+          <div style="font-size:1.5em">💫</div>
+          <div style="font-weight:700">Superstjerne</div>
+          <div style="color:#888;font-size:.88em">10–19 stjerner</div>
+        </div>
+        <div class="card" style="margin:0;background:#fff7ed;border-color:#fb923c;box-shadow:3px 3px 0 #c2410c">
+          <div style="font-size:1.5em">🏆</div>
+          <div style="font-weight:700">Leksehelt</div>
+          <div style="color:#888;font-size:.88em">20+ stjerner</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<script>
+/* ─────────────────────────────────────────
+   DATA & CONSTANTS
+───────────────────────────────────────── */
+const SUBJECTS = {
+  'Norsk':            { bg:'#FF6B9D', border:'#c94475', text:'#fff' },
+  'Matte':            { bg:'#4B9FE1', border:'#2970b0', text:'#fff' },
+  'Engelsk':          { bg:'#FFA94D', border:'#d97706', text:'#fff' },
+  'Naturfag':         { bg:'#5CC85A', border:'#3a9e38', text:'#fff' },
+  'Samfunnsfag':      { bg:'#20C997', border:'#0a9a72', text:'#fff' },
+  'Musikk':           { bg:'#C44BC4', border:'#9a2a9a', text:'#fff' },
+  'Kunst og håndverk':{ bg:'#FF6B6B', border:'#c94444', text:'#fff' },
+  'Gym':              { bg:'#FFD43B', border:'#d4a80a', text:'#333' },
+};
+const STUDENT_COLORS = ['#4F46E5','#FF6B9D','#FFA94D','#5CC85A','#C44BC4','#FF6B6B','#20C997','#4B9FE1','#e67e22'];
+const DAY_COLORS = [
+  { bg:'#FF6B9D', border:'#c94475', shadow:'#c94475' }, // Mon
+  { bg:'#FFA94D', border:'#d97706', shadow:'#d97706' }, // Tue
+  { bg:'#5CC85A', border:'#3a9e38', shadow:'#3a9e38' }, // Wed
+  { bg:'#4B9FE1', border:'#2970b0', shadow:'#2970b0' }, // Thu
+  { bg:'#C44BC4', border:'#9a2a9a', shadow:'#9a2a9a' }, // Fri
+];
+const DAY_NAMES = ['Mandag','Tirsdag','Onsdag','Torsdag','Fredag'];
+const NO_MONTHS = ['jan','feb','mar','apr','mai','jun','jul','aug','sep','okt','nov','des'];
+
+let students = [], homework = [], currentStudentId = null;
+
+/* ─────────────────────────────────────────
+   STORAGE
+───────────────────────────────────────── */
+function loadData() {
+  try {
+    students  = JSON.parse(localStorage.getItem('lp_students')  || '[]');
+    homework  = JSON.parse(localStorage.getItem('lp_homework')  || '[]');
+  } catch(e) { students=[]; homework=[]; }
+}
+function saveData() {
+  localStorage.setItem('lp_students', JSON.stringify(students));
+  localStorage.setItem('lp_homework', JSON.stringify(homework));
+}
+
+/* ─────────────────────────────────────────
+   DEMO DATA
+───────────────────────────────────────── */
+function loadDemoData() {
+  const week = getWeekDates();
+  const fmt = d => d.toISOString().split('T')[0];
+  students = [
+    { id:'s1', name:'Emma' },
+    { id:'s2', name:'Noah' },
+    { id:'s3', name:'Olivia' },
+    { id:'s4', name:'Liam' },
+    { id:'s5', name:'Sofia' },
+  ];
+  homework = [
+    { id:'h1',  studentId:'s1', subject:'Norsk',            desc:'Les side 45–50',            dueDate:fmt(week[0]), done:true  },
+    { id:'h2',  studentId:'s1', subject:'Matte',            desc:'Oppgave 3.4 og 3.5',        dueDate:fmt(week[2]), done:false },
+    { id:'h3',  studentId:'s1', subject:'Engelsk',          desc:'Skriv om favorittdyret ditt',dueDate:fmt(week[4]), done:false },
+    { id:'h4',  studentId:'s2', subject:'Matte',            desc:'Gangetabellen 7 og 8',       dueDate:fmt(week[1]), done:true  },
+    { id:'h5',  studentId:'s2', subject:'Naturfag',         desc:'Tegn planten og merk deler', dueDate:fmt(week[3]), done:false },
+    { id:'h6',  studentId:'s3', subject:'Norsk',            desc:'Diktatøvelse side 22',       dueDate:fmt(week[0]), done:true  },
+    { id:'h7',  studentId:'s3', subject:'Musikk',           desc:'Øv på fløyten – "Bjørnedansen"', dueDate:fmt(week[2]), done:true  },
+    { id:'h8',  studentId:'s3', subject:'Samfunnsfag',      desc:'Les om vikingtiden kap. 4',  dueDate:fmt(week[4]), done:false },
+    { id:'h9',  studentId:'s4', subject:'Gym',              desc:'Ta med idrettsklær og vannflaske', dueDate:fmt(week[3]), done:false },
+    { id:'h10', studentId:'s4', subject:'Kunst og håndverk',desc:'Fullføre leirpotten',         dueDate:fmt(week[1]), done:true  },
+    { id:'h11', studentId:'s5', subject:'Engelsk',          desc:'Les side 30–35',             dueDate:fmt(week[2]), done:true  },
+    { id:'h12', studentId:'s5', subject:'Matte',            desc:'Divisjonsøvelse ark 5',      dueDate:fmt(week[4]), done:false },
+  ];
+  saveData();
+}
+
+/* ─────────────────────────────────────────
+   HELPERS
+───────────────────────────────────────── */
+function uid() { return 's' + Date.now() + Math.random().toString(36).slice(2,7); }
+
+function getWeekDates() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const day = today.getDay(); // 0=Sun
+  const offset = day === 0 ? -6 : 1 - day;
+  const mon = new Date(today); mon.setDate(today.getDate() + offset);
+  return Array.from({length:5}, (_,i) => { const d=new Date(mon); d.setDate(mon.getDate()+i); return d; });
+}
+
+function fmtDate(str) {
+  if (!str) return '';
+  const [y,m,d] = str.split('-');
+  return `${parseInt(d)}. ${NO_MONTHS[parseInt(m)-1]} ${y}`;
+}
+
+function dateStatus(str) {
+  if (!str) return '';
+  const today = new Date(); today.setHours(0,0,0,0);
+  const due = new Date(str); due.setHours(0,0,0,0);
+  const diff = Math.round((due - today)/(1000*60*60*24));
+  if (diff < 0)  return 'overdue';
+  if (diff === 0) return 'today';
+  if (diff <= 2)  return 'soon';
+  return '';
+}
+
+function dateLabel(str, done) {
+  if (done) return { cls:'', txt:'✅ Levert' };
+  const s = dateStatus(str);
+  if (s==='overdue') return { cls:'overdue', txt:'⚠️ Forfalt! ' + fmtDate(str) };
+  if (s==='today')   return { cls:'today',   txt:'🔥 I dag!' };
+  if (s==='soon')    return { cls:'soon',    txt:'⏰ Om kort tid – ' + fmtDate(str) };
+  return { cls:'', txt:'📅 ' + fmtDate(str) };
+}
+
+function subjectStyle(sub) { return SUBJECTS[sub] || { bg:'#888', border:'#555', text:'#fff' }; }
+
+function studentColor(id) {
+  const idx = students.findIndex(s=>s.id===id);
+  return STUDENT_COLORS[idx % STUDENT_COLORS.length] || '#4F46E5';
+}
+
+function starCount(studentId) {
+  return homework.filter(h=>h.studentId===studentId && h.done).length;
+}
+
+function rankInfo(stars) {
+  if (stars >= 20) return { label:'🏆 Leksehelt',     color:'#f97316' };
+  if (stars >= 10) return { label:'💫 Superstjerne',  color:'#9333ea' };
+  if (stars >= 5)  return { label:'📖 Leksemester',   color:'#2563eb' };
+  return              { label:'🌱 Leksebegynner',  color:'#15803d' };
+}
+
+/* ─────────────────────────────────────────
+   TOAST
+───────────────────────────────────────── */
+let toastTimer = null;
+function showToast(msg, type='star-toast') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + type;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.classList.remove('show'); }, 3200);
+}
+
+/* ─────────────────────────────────────────
+   CONFETTI
+───────────────────────────────────────── */
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#FF6B9D','#FFA94D','#FFD43B','#5CC85A','#4B9FE1','#C44BC4','#FF6B6B'];
+  const pts = Array.from({length:80}, () => ({
+    x: Math.random()*canvas.width,
+    y: -14,
+    w: Math.random()*10+4,
+    h: Math.random()*6+4,
+    color: colors[Math.floor(Math.random()*colors.length)],
+    vx: (Math.random()-.5)*5,
+    vy: Math.random()*5+3,
+    rot: Math.random()*360,
+    vr: (Math.random()-.5)*12,
+  }));
+  let f=0;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pts.forEach(p => {
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.vy+=.08;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+    });
+    f++;
+    if(f<110) requestAnimationFrame(draw); else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  draw();
+}
+
+/* ─────────────────────────────────────────
+   TABS
+───────────────────────────────────────── */
+function showTab(name) {
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.querySelector(`[data-tab="${name}"]`).classList.add('active');
+  if(name==='foreldre')  renderForeldre();
+  if(name==='klasse')    renderKlasse();
+  if(name==='uke')       renderUkeplan();
+  if(name==='stjerner')  renderStjerner();
+}
+
+/* ─────────────────────────────────────────
+   TAB 1 – MINE LEKSER
+───────────────────────────────────────── */
+function renderStudentChips() {
+  const container = document.getElementById('student-chips');
+  container.innerHTML = students.map(s=>`
+    <button class="student-chip ${s.id===currentStudentId?'active':''}"
+            onclick="selectStudent('${s.id}')" aria-pressed="${s.id===currentStudentId}" role="listitem">
+      ${escHtml(s.name)}
+    </button>`).join('');
+}
+
+function selectStudent(id) {
+  currentStudentId = id;
+  renderStudentChips();
+  document.getElementById('add-hw-card').style.display = 'block';
+  document.getElementById('hw-list-card').style.display = 'block';
+  // set default date to today
+  const d = document.getElementById('hw-date');
+  if(!d.value) d.value = new Date().toISOString().split('T')[0];
+  renderHwList();
+}
+
+function addStudent() {
+  const input = document.getElementById('new-student-name');
+  const name = input.value.trim();
+  if(!name) { showToast('✏️ Skriv inn et navn!','info-toast'); return; }
+  if(students.some(s=>s.name.toLowerCase()===name.toLowerCase())) {
+    showToast('Det finnes allerede en elev med det navnet!','info-toast'); return;
+  }
+  const s = { id:uid(), name };
+  students.push(s);
+  saveData();
+  input.value='';
+  renderStudentChips();
+  selectStudent(s.id);
+  showToast(`👋 Hei ${name}! Velkommen til Lekseplan!`,'info-toast');
+}
+
+function addHomework() {
+  if(!currentStudentId) { showToast('Velg deg selv først!','info-toast'); return; }
+  const sub  = document.getElementById('hw-subject').value;
+  const desc = document.getElementById('hw-desc').value.trim();
+  const date = document.getElementById('hw-date').value;
+  if(!desc) { showToast('✏️ Beskriv hva du skal gjøre!','info-toast'); return; }
+  if(!date) { showToast('📅 Velg innleveringsdato!','info-toast'); return; }
+  homework.push({ id:uid(), studentId:currentStudentId, subject:sub, desc, dueDate:date, done:false });
+  saveData();
+  document.getElementById('hw-desc').value='';
+  renderHwList();
+  showToast(`📚 Lekse i ${sub} lagt til!`,'info-toast');
+}
+
+function toggleHw(id) {
+  const hw = homework.find(h=>h.id===id);
+  if(!hw) return;
+  hw.done = !hw.done;
+  saveData();
+  renderHwList();
+  if(hw.done) {
+    launchConfetti();
+    showToast('⭐ Bra jobbet! Du fikk en stjerne! 🎉','star-toast');
+    // star pop on the checkbox
+    const box = document.querySelector(`[data-hw="${id}"] .hw-checkbox`);
+    if(box) { box.classList.add('star-pop'); setTimeout(()=>box.classList.remove('star-pop'),500); }
+  }
+}
+
+function deleteHw(id) {
+  if(!confirm('Vil du slette denne leksen?')) return;
+  homework = homework.filter(h=>h.id!==id);
+  saveData();
+  renderHwList();
+}
+
+function renderHwList() {
+  if(!currentStudentId) return;
+  const list = homework.filter(h=>h.studentId===currentStudentId);
+  const el = document.getElementById('hw-list');
+
+  if(!list.length) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-emoji">🎉</div><div class="empty-txt">Ingen lekser! Du er fri!</div></div>`;
+    return;
+  }
+
+  // Sort: undone first, then by date
+  const sorted = [...list].sort((a,b) => {
+    if(a.done!==b.done) return a.done?1:-1;
+    return (a.dueDate||'').localeCompare(b.dueDate||'');
+  });
+
+  el.innerHTML = sorted.map(h => {
+    const s = subjectStyle(h.subject);
+    const dl = dateLabel(h.dueDate, h.done);
+    return `
+    <div class="hw-item ${h.done?'done':''}" data-hw="${h.id}"
+         style="border-color:${s.border};border-left-width:5px">
+      <div class="hw-checkbox ${h.done?'checked':''}" onclick="toggleHw('${h.id}')"
+           role="checkbox" aria-checked="${h.done}" tabindex="0"
+           onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleHw('${h.id}')}"
+           title="${h.done?'Marker som ikke levert':'Marker som levert'}">
+        ${h.done?'✓':''}
+      </div>
+      <span class="subject-pill ${h.subject==='Gym'?'gym-pill':''}"
+            style="background:${s.bg}; color:${s.text}">${h.subject}</span>
+      <div class="hw-info">
+        <div class="hw-subject-text">${escHtml(h.desc)}</div>
+        <div class="hw-date ${dl.cls}">${dl.txt}</div>
+      </div>
+      <button class="del-btn" onclick="deleteHw('${h.id}')" aria-label="Slett lekse" title="Slett">✕</button>
+    </div>`;
+  }).join('');
+}
+
+/* ─────────────────────────────────────────
+   TAB 2 – FORELDREVISNING
+───────────────────────────────────────── */
+function populateParentSelect() {
+  const sel = document.getElementById('parent-select');
+  const prev = sel.value;
+  sel.innerHTML = students.map(s=>`<option value="${s.id}">${escHtml(s.name)}</option>`).join('');
+  if(prev && students.find(s=>s.id===prev)) sel.value=prev;
+}
+
+function renderForeldre() {
+  populateParentSelect();
+  const sel = document.getElementById('parent-select');
+  const sid = sel.value;
+  const content = document.getElementById('parent-content');
+  if(!sid || !students.find(s=>s.id===sid)) { content.innerHTML=''; return; }
+
+  const list = homework.filter(h=>h.studentId===sid);
+  const done  = list.filter(h=>h.done).length;
+  const total = list.length;
+  const pct   = total ? Math.round((done/total)*100) : 0;
+  const overdue = list.filter(h=>!h.done && dateStatus(h.dueDate)==='overdue').length;
+  const color = studentColor(sid);
+
+  const sorted = [...list].sort((a,b)=>{
+    if(a.done!==b.done) return a.done?1:-1;
+    return (a.dueDate||'').localeCompare(b.dueDate||'');
+  });
+
+  content.innerHTML = `
+    <div class="card">
+      <div class="parent-stats">
+        <div class="stat-box">
+          <div class="stat-num" style="color:#22c55e">${done}</div>
+          <div class="stat-lbl">Levert</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" style="color:#f97316">${total-done}</div>
+          <div class="stat-lbl">Gjenstår</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" style="color:${overdue>0?'#ef4444':'#22c55e'}">${overdue}</div>
+          <div class="stat-lbl">Forfalt</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-weight:700;font-size:.93em;color:#555">
+        <span>Fremgang</span><span>${pct}% levert</span>
+      </div>
+      <div class="prog-wrap"><div class="prog-fill" style="width:${pct}%"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:${color}">📋 Alle lekser</div>
+      ${!list.length ? `<div class="empty-state"><div class="empty-emoji">🎉</div><div class="empty-txt">Ingen lekser denne uken!</div></div>` :
+        `<div class="hw-list">${sorted.map(h=>{
+          const s = subjectStyle(h.subject);
+          const dl = dateLabel(h.dueDate, h.done);
+          return `
+          <div class="hw-item ${h.done?'done':''}" style="border-color:${s.border};border-left-width:5px">
+            <div class="hw-checkbox ${h.done?'checked':''}" style="cursor:default">${h.done?'✓':''}</div>
+            <span class="subject-pill ${h.subject==='Gym'?'gym-pill':''}"
+                  style="background:${s.bg};color:${s.text}">${h.subject}</span>
+            <div class="hw-info">
+              <div class="hw-subject-text">${escHtml(h.desc)}</div>
+              <div class="hw-date ${dl.cls}">${dl.txt}</div>
+            </div>
+          </div>`;
+        }).join('')}</div>`
+      }
+    </div>`;
+}
+
+/* ─────────────────────────────────────────
+   TAB 3 – KLASSEOVERSIKT
+───────────────────────────────────────── */
+function renderKlasse() {
+  const week = getWeekDates();
+  const weekStr = week.map(d=>d.toISOString().split('T')[0]);
+  const grid = document.getElementById('class-grid');
+
+  if(!students.length) {
+    grid.innerHTML=`<div class="empty-state"><div class="empty-emoji">👥</div><div class="empty-txt">Ingen elever ennå!</div></div>`;
+    return;
+  }
+
+  grid.innerHTML = students.map(s => {
+    const list = homework.filter(h=>h.studentId===s.id && weekStr.includes(h.dueDate));
+    const done = list.filter(h=>h.done).length;
+    const color = studentColor(s.id);
+    const stars = starCount(s.id);
+
+    return `
+    <div class="class-card">
+      <div class="class-card-head" style="background:${color}">
+        <span>${escHtml(s.name)}</span>
+        <span>⭐${stars}</span>
+      </div>
+      <div class="class-card-body">
+        ${list.length===0 ? `<div style="color:#bbb;font-size:.88em;padding:8px 0">Ingen lekser denne uken 🎉</div>` :
+          list.map(h=>{
+            const s2=subjectStyle(h.subject);
+            return `<div class="class-hw-mini">
+              <span class="check-mini">${h.done?'✅':'⬜'}</span>
+              <span class="subject-pill" style="background:${s2.bg};color:${s2.text};font-size:.75em;padding:2px 8px">${h.subject}</span>
+              <span style="font-size:.85em;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${escHtml(h.desc)}</span>
+            </div>`;
+          }).join('')
+        }
+        ${list.length ? `
+          <div class="prog-wrap" style="margin-top:8px">
+            <div class="prog-fill" style="width:${list.length?Math.round((done/list.length)*100):0}%"></div>
+          </div>
+          <div style="font-size:.8em;color:#888;margin-top:4px;text-align:right">${done}/${list.length} levert</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ─────────────────────────────────────────
+   TAB 4 – UKEPLAN
+───────────────────────────────────────── */
+function renderUkeplan() {
+  const week = getWeekDates();
+  const grid = document.getElementById('week-grid');
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  document.getElementById('week-range').textContent =
+    `${week[0].getDate()}. ${NO_MONTHS[week[0].getMonth()]} – ${week[4].getDate()}. ${NO_MONTHS[week[4].getMonth()]} ${week[4].getFullYear()}`;
+
+  grid.innerHTML = week.map((d,i) => {
+    const dStr = d.toISOString().split('T')[0];
+    const c = DAY_COLORS[i];
+    const isToday = d.getTime() === today.getTime();
+    const tasks = homework.filter(h=>h.dueDate===dStr);
+
+    return `
+    <div class="day-col" style="border-color:${c.border};box-shadow:4px 4px 0 ${c.shadow}">
+      <div class="day-col-head ${c.bg==='#FFD43B'?'gym-head':''}" style="background:${c.bg}">
+        ${DAY_NAMES[i]}<br>
+        <span style="font-size:.82em;font-weight:500;opacity:.9">${d.getDate()}. ${NO_MONTHS[d.getMonth()]}</span>
+        ${isToday?'<br><span style="font-size:.75em;background:rgba(255,255,255,.3);padding:1px 6px;border-radius:8px">I dag</span>':''}
+      </div>
+      <div class="day-col-body">
+        ${tasks.length===0 ? `<div class="day-empty">🌈 Fri!</div>` :
+          tasks.map(h=>{
+            const s=subjectStyle(h.subject); const st=students.find(x=>x.id===h.studentId);
+            return `<div class="day-task ${h.done?'done-task':''}" style="border-color:${s.bg}">
+              <div class="day-task-who">${st?escHtml(st.name):'?'}</div>
+              <div class="day-task-sub" style="color:${s.bg}">${h.subject}</div>
+              <div class="day-task-desc">${escHtml(h.desc)}</div>
+            </div>`;
+          }).join('')
+        }
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ─────────────────────────────────────────
+   TAB 5 – STJERNER
+───────────────────────────────────────── */
+function renderStjerner() {
+  const grid = document.getElementById('stars-grid');
+  if(!students.length) {
+    grid.innerHTML=`<div class="empty-state"><div class="empty-emoji">⭐</div><div class="empty-txt">Ingen elever ennå!</div></div>`;
+    return;
+  }
+
+  const sorted = [...students]
+    .map(s=>({ ...s, stars: starCount(s.id) }))
+    .sort((a,b)=>b.stars-a.stars);
+
+  grid.innerHTML = sorted.map((s,i) => {
+    const rank = rankInfo(s.stars);
+    const cls = i===0?'gold': i===1?'silver': i===2?'bronze':'';
+    const starsDisplay = '⭐'.repeat(Math.min(s.stars,10)) + (s.stars>10?`+${s.stars-10}`:'');
+
+    return `
+    <div class="star-card ${cls}">
+      <div class="star-rank-num">${i===0?'🥇':i===1?'🥈':i===2?'🥉':''} #${i+1}</div>
+      <div class="star-name">${escHtml(s.name)}</div>
+      <div class="star-big">${s.stars}</div>
+      <div style="color:#888;font-size:.82em;margin-bottom:2px">stjerner</div>
+      <div class="star-icons">${starsDisplay || '–'}</div>
+      <span class="rank-badge" style="background:${rank.color}">${rank.label}</span>
+    </div>`;
+  }).join('');
+}
+
+/* ─────────────────────────────────────────
+   UTILS
+───────────────────────────────────────── */
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+/* ─────────────────────────────────────────
+   INIT
+───────────────────────────────────────── */
+(function init() {
+  loadData();
+  if(!localStorage.getItem('lp_init')) {
+    loadDemoData();
+    localStorage.setItem('lp_init','1');
+  }
+  renderStudentChips();
+  populateParentSelect();
+  // Set today's date as default in form
+  document.getElementById('hw-date').value = new Date().toISOString().split('T')[0];
+})();
+</script>
+</body>
+</html>
