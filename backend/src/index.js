@@ -13,9 +13,27 @@ const { initSocket } = require('./socket');
 const app = express();
 const server = http.createServer(app);
 
+// Multi-origin CORS: ALLOWED_ORIGINS (comma-separated) + FRONTEND_URL +
+// known production domains. Same allowlist applies to Socket.io and HTTP.
+const allowedOrigins = [...new Set([
+  ...(process.env.ALLOWED_ORIGINS?.split(',').map(s => s.trim()).filter(Boolean) || []),
+  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+  'https://aautoma.eu',
+  'https://www.aautoma.eu',
+  'https://procompliance.online',
+  'https://www.procompliance.online',
+  'http://localhost:3000',
+])];
+
+const corsOrigin = (origin, callback) => {
+  if (!origin) return callback(null, true);
+  if (allowedOrigins.includes(origin)) return callback(null, true);
+  callback(new Error(`CORS blocked: ${origin}`));
+};
+
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: corsOrigin,
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -24,10 +42,12 @@ const io = new Server(server, {
 // Middleware
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: corsOrigin,
   credentials: true,
 }));
 app.use(express.json());
+
+console.log('CORS allowed origins:', allowedOrigins);
 
 // Routes
 app.use('/api/auth', authRoutes);
