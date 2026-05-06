@@ -5,6 +5,13 @@ import { registerServiceWorker, subscribeToPush } from '../services/notification
 
 const AuthContext = createContext(null);
 
+export const DEMO_USERS = [
+  { label: 'Bruker 1', email: 'bruker1@nearme.demo' },
+  { label: 'Bruker 2', email: 'bruker2@nearme.demo' },
+  { label: 'Bruker 3', email: 'bruker3@nearme.demo' },
+];
+const DEMO_PASSWORD = 'Demo1234';
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,23 +25,16 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem('nearme_token');
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-
+    if (!token) { setLoading(false); return; }
     api.me()
       .then(({ user }) => {
         setUser(user);
         const s = initSocket(token);
-        registerServiceWorker().then(() => subscribeToPush());
+        registerServiceWorker().then(() => subscribeToPush()).catch(() => {});
         return s;
       })
-      .catch(() => {
-        localStorage.removeItem('nearme_token');
-      })
+      .catch(() => localStorage.removeItem('nearme_token'))
       .finally(() => setLoading(false));
-
     return () => disconnectSocket();
   }, [initSocket]);
 
@@ -43,8 +43,7 @@ export function AuthProvider({ children }) {
     localStorage.setItem('nearme_token', token);
     setUser(user);
     const s = initSocket(token);
-    await registerServiceWorker();
-    await subscribeToPush();
+    try { await registerServiceWorker(); await subscribeToPush(); } catch {}
     return { token, user, socket: s };
   };
 
@@ -53,10 +52,11 @@ export function AuthProvider({ children }) {
     localStorage.setItem('nearme_token', token);
     setUser(user);
     const s = initSocket(token);
-    await registerServiceWorker();
-    await subscribeToPush();
+    try { await registerServiceWorker(); await subscribeToPush(); } catch {}
     return { token, user, socket: s };
   };
+
+  const loginAsDemo = (email) => login(email, DEMO_PASSWORD);
 
   const logout = () => {
     localStorage.removeItem('nearme_token');
@@ -68,7 +68,7 @@ export function AuthProvider({ children }) {
   const updateUser = (updates) => setUser((u) => ({ ...u, ...updates }));
 
   return (
-    <AuthContext.Provider value={{ user, loading, socket, login, register, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, loading, socket, login, register, loginAsDemo, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
