@@ -9,6 +9,7 @@ const authRoutes = require('./routes/auth');
 const messageRoutes = require('./routes/messages');
 const userRoutes = require('./routes/users');
 const { initSocket } = require('./socket');
+const { runMigrations } = require('./db/migrate');
 
 const app = express();
 const server = http.createServer(app);
@@ -25,9 +26,14 @@ const allowedOrigins = [...new Set([
   'http://localhost:3000',
 ])];
 
+// Vercel-deploys får tilfeldige subdomener — tillat hele *.vercel.app
+// så preview/prod-deploys virker uten å redeploye backend per gang.
+const VERCEL_HOST_RE = /^https:\/\/[a-z0-9-]+\.vercel\.app$/i;
+
 const corsOrigin = (origin, callback) => {
   if (!origin) return callback(null, true);
   if (allowedOrigins.includes(origin)) return callback(null, true);
+  if (VERCEL_HOST_RE.test(origin)) return callback(null, true);
   callback(new Error(`CORS blocked: ${origin}`));
 };
 
@@ -66,6 +72,13 @@ app.get('/api/vapid-public-key', (req, res) => {
 initSocket(io);
 
 const PORT = process.env.PORT || 4000;
-server.listen(PORT, () => {
-  console.log(`NearMe backend listening on port ${PORT}`);
-});
+
+// Bootstrap skjema før vi tar imot trafikk. Hvis det feiler, logg men start
+// likevel — health-check skal fortsatt svare så Railway ikke restartcrasher.
+runMigrations()
+  .catch((err) => console.error('Migrations feilet:', err))
+  .finally(() => {
+    server.listen(PORT, () => {
+      console.log(`NearMe backend listening on port ${PORT}`);
+    });
+  });
