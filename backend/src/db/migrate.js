@@ -64,9 +64,9 @@ CREATE TRIGGER trigger_users_updated_at
 `;
 
 const SEED_USERS = [
-  { id: '11111111-1111-1111-1111-111111111111', name: 'Bruker 1', email: 'bruker1@nearme.demo' },
-  { id: '22222222-2222-2222-2222-222222222222', name: 'Bruker 2', email: 'bruker2@nearme.demo' },
-  { id: '33333333-3333-3333-3333-333333333333', name: 'Bruker 3', email: 'bruker3@nearme.demo' },
+  { id: '11111111-1111-1111-1111-111111111111', name: 'Drogba',   email: 'bruker1@nearme.demo' },
+  { id: '22222222-2222-2222-2222-222222222222', name: 'TommyTee', email: 'bruker2@nearme.demo' },
+  { id: '33333333-3333-3333-3333-333333333333', name: 'Dottie',   email: 'bruker3@nearme.demo' },
 ];
 // bcrypt.hashSync('Demo1234', 10)
 const SEED_PASSWORD_HASH = '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy';

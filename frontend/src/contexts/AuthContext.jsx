@@ -6,9 +6,9 @@ import { registerServiceWorker, subscribeToPush } from '../services/notification
 const AuthContext = createContext(null);
 
 export const DEMO_USERS = [
-  { label: 'Bruker 1', email: 'bruker1@nearme.demo' },
-  { label: 'Bruker 2', email: 'bruker2@nearme.demo' },
-  { label: 'Bruker 3', email: 'bruker3@nearme.demo' },
+  { label: 'Drogba',   email: 'bruker1@nearme.demo' },
+  { label: 'TommyTee', email: 'bruker2@nearme.demo' },
+  { label: 'Dottie',   email: 'bruker3@nearme.demo' },
 ];
 const DEMO_PASSWORD = 'Demo1234';
 
