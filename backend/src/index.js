@@ -73,12 +73,19 @@ initSocket(io);
 
 const PORT = process.env.PORT || 4000;
 
-// Bootstrap skjema før vi tar imot trafikk. Hvis det feiler, logg men start
-// likevel — health-check skal fortsatt svare så Railway ikke restartcrasher.
+// Bind eksplisitt til 0.0.0.0 så Railway-edge når containeren — Node binder
+// ofte til localhost ellers, og det skjuler appen for proxy-laget.
+const HOST = '0.0.0.0';
+
+// Start lytteren UMIDDELBART — health-check må svare innen Railway sin
+// startup-grace, uavhengig av om migrasjonen henger.
+server.listen(PORT, HOST, () => {
+  console.log(`NearMe backend listening on ${HOST}:${PORT}`);
+});
+
+// Migrasjon kjører i bakgrunnen — om den feiler logger vi det, men serveren
+// svarer på /health med en gang. Pool-en har 2s connect-timeout så hangs er
+// begrenset.
 runMigrations()
-  .catch((err) => console.error('Migrations feilet:', err))
-  .finally(() => {
-    server.listen(PORT, () => {
-      console.log(`NearMe backend listening on port ${PORT}`);
-    });
-  });
+  .then(() => console.log('[boot] Migrasjon ferdig — skjema klart'))
+  .catch((err) => console.error('[boot] Migrasjon feilet:', err.message));
