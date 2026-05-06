@@ -83,11 +83,40 @@ async function seedUsers(client) {
   console.log(`[migrate] Seeded ${SEED_USERS.length} demo users`);
 }
 
+// Forsøk extension separat så vi kan diagnostisere uten at hele migrasjonen
+// faller. Hvis postgis ikke er tilgjengelig, logg + fall tilbake til
+// lat/lng-kolonner (ingen GIST-indeks, men fungerende app).
+async function tryEnableExtensions(client) {
+  for (const ext of ['postgis', '"uuid-ossp"']) {
+    try {
+      await client.query(`CREATE EXTENSION IF NOT EXISTS ${ext}`);
+      console.log(`[migrate] Extension ${ext} OK`);
+    } catch (err) {
+      console.warn(`[migrate] Extension ${ext} feilet: ${err.message}`);
+      if (ext === 'postgis') {
+        // Uten PostGIS faller vi tilbake til float-kolonner.
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+const FALLBACK_SCHEMA_SQL = SCHEMA_SQL
+  // Bytt GEOMETRY(Point, 4326) → to float-kolonner.
+  .replace('location GEOMETRY(Point, 4326) NOT NULL,', 'lat DOUBLE PRECISION NOT NULL,\n  lng DOUBLE PRECISION NOT NULL,')
+  // Drop GIST-indeksen (krever PostGIS).
+  .replace(/CREATE INDEX IF NOT EXISTS idx_user_locations_geom[^;]+;/, '')
+  // Drop uuid_generate_v4 (uuid-ossp). Postgres 13+ har gen_random_uuid.
+  .replace(/uuid_generate_v4\(\)/g, 'gen_random_uuid()');
+
 async function runMigrations() {
   const client = await pool.connect();
   try {
-    await client.query(SCHEMA_SQL);
-    console.log('[migrate] Skjema bootstrappet OK');
+    const havePostGIS = await tryEnableExtensions(client);
+    const schema = havePostGIS ? SCHEMA_SQL : FALLBACK_SCHEMA_SQL;
+    await client.query(schema);
+    console.log(`[migrate] Skjema bootstrappet OK (PostGIS: ${havePostGIS})`);
     await seedUsers(client);
   } catch (err) {
     console.error('[migrate] Feil under bootstrap:', err.message);
