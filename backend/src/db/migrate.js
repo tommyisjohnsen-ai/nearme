@@ -103,6 +103,8 @@ async function tryEnableExtensions(client) {
 }
 
 const FALLBACK_SCHEMA_SQL = SCHEMA_SQL
+  // Drop CREATE EXTENSION-linjene helt — vi har allerede prøvd dem.
+  .replace(/CREATE EXTENSION IF NOT EXISTS [^;]+;/g, '')
   // Bytt GEOMETRY(Point, 4326) → to float-kolonner.
   .replace('location GEOMETRY(Point, 4326) NOT NULL,', 'lat DOUBLE PRECISION NOT NULL,\n  lng DOUBLE PRECISION NOT NULL,')
   // Drop GIST-indeksen (krever PostGIS).
